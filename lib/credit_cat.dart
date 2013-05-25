@@ -8,9 +8,12 @@ class creditCat {
   String cardIndustry;
   bool valid;
   
-  var _INDUSTRY_IDENTIFIER_MAP = {"1": "Airlines", "2": "Airlines", "3": "Travel and Entertainment",
+  final Map _INDUSTRY_IDENTIFIER_MAP = {"1": "Airlines", "2": "Airlines", "3": "Travel and Entertainment",
                                   "4": "Banking and Financial", "5": "Banking and Financial", "6": "Merchandizing and Banking",
                                   "7": "Petroleum", "8": "Telecommunications", "9": "National Assignment"};
+  
+  final Map _ISSUER_IDENTIFIER_MAP = {"Visa": new RegExp(r'^4'), "Mastercard": new RegExp(r'^5[1-5]'),
+                                      "Discover": new RegExp(r'^6(0|4|5)(1|4)?(1)?'), "Amex": new RegExp(r'^3(4|7)')};
   
   creditCat(String number){
     this.cardNumber = number.replaceAll(new RegExp(r"-|\s"), "");
@@ -30,7 +33,8 @@ class creditCat {
   _load(){
     if(_check(this.cardNumber)){
       this.valid = this._validate(this.cardNumber);
-      this.cardIndustry = this._industry(this.cardNumber); 
+      this.cardIndustry = this._industry(this.cardNumber);
+      this.cardIssuer = this._issuer(this.cardNumber);
     } else {
       throw new FormatException("Unclean Input: ${this.cardNumber}");
     }
@@ -58,6 +62,17 @@ class creditCat {
   
   String _industry(String number){
     return _INDUSTRY_IDENTIFIER_MAP[number.substring(0, 1)];
+  }
+  
+  String _issuer(String number) {
+    String issuer = "Unknown";
+    var issuerID = number.substring(0, 6);
+    _ISSUER_IDENTIFIER_MAP.forEach((k,v){
+      if(v.hasMatch(issuerID)){
+        issuer = k;
+      }
+    });
+    return issuer;
   }
   
   toJSON(){

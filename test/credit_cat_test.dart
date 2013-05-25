@@ -42,6 +42,40 @@
     var cat3 = new creditCat("512321321");
     expect(cat3.cardIndustry, equals("Banking and Financial"));
   });
+    
+  test("Should return the right issuer name for Visa", () {
+    var cat = new creditCat("400000");
+    expect(cat.cardIssuer, equals("Visa"));  
+  });
+  
+  test("Should return the right issuer name for Mastercard", () {
+    var cat = new creditCat("510000");
+    expect(cat.cardIssuer, equals("Mastercard")); 
+  });
+  
+  test("Should return the right issuer name for Discover", () {
+    var cat1 = new creditCat("601100");
+    expect(cat1.cardIssuer, equals("Discover"));
+    
+    var cat2 = new creditCat("644000");
+    expect(cat2.cardIssuer, equals("Discover"));
+    
+    var cat3 = new creditCat("650000");
+    expect(cat3.cardIssuer, equals("Discover"));
+  });
+  
+  test("Should return the right issuer for Amex", () {
+    var cat1 = new creditCat("340000");
+    expect(cat1.cardIssuer, equals("Amex"));
+    
+    var cat2 = new creditCat("370000");
+    expect(cat2.cardIssuer, equals("Amex"));
+  });
+  
+  test("Should return unknown for an issuer that hasn't been implemented yet", () {
+    var cat1 = new creditCat("999999");
+    expect(cat1.cardIssuer, equals("Unknown"));
+  });
   
   test("Should return JSON object", () {
     var cat = new creditCat("5232132174");
