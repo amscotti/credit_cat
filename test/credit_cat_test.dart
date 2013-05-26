@@ -1,5 +1,6 @@
  library credit_cat_test;  
    
+ import 'dart:json';
  import 'package:credit_cat/credit_cat.dart';  
  import 'package:unittest/unittest.dart';
   
@@ -79,7 +80,12 @@
   
   test("Should return JSON object", () {
     var cat = new creditCat("5232132174");
-    expect(cat.toJSON(), equals('{"number":"5232132174","industry":"Banking and Financial","issuer":"Mastercard","valid":true}'));
+    expect(stringify(cat), equals('{"number":"5232132174","industry":"Banking and Financial","issuer":"Mastercard","valid":true}'));
+  });
+  
+  test("Should return String", () {
+    var cat = new creditCat("5232132174");
+    expect(cat.toString(), equals('number: 5232132174, industry: Banking and Financial, issuer: Mastercard, valid: true'));
   });
   
  }  

@@ -1,7 +1,5 @@
 library credit_cat;
 
-import 'dart:json';
-
 class creditCat {
   String cardNumber;
   String cardIssuer;
@@ -12,7 +10,7 @@ class creditCat {
                                   "4": Industries.BANKING_AND_FINANCIAL, "5": Industries.BANKING_AND_FINANCIAL, "6": Industries.MERCHANDIZING_AND_BANKING,
                                   "7": Industries.PETROLEUM, "8": Industries.TELECOMMUNICATIONS, "9": Industries.NATIONAL_ASSIGNMENT};
   
-  final Map _ISSUER_IDENTIFIER_MAP = {"Visa": new RegExp(r'^4'), "Mastercard": new RegExp(r'^5[1-5]'),
+  static Map _ISSUER_IDENTIFIER_MAP = {"Visa": new RegExp(r'^4'), "Mastercard": new RegExp(r'^5[1-5]'),
                                       "Discover": new RegExp(r'^6(0|4|5)(1|4)?(1)?'), "Amex": new RegExp(r'^3(4|7)')};
   
   creditCat(String number){
@@ -75,9 +73,9 @@ class creditCat {
     return issuer;
   }
   
-  toJSON(){
-    return stringify({"number": this.cardNumber, "industry": this.cardIndustry.toString(), "issuer": this.cardIssuer, "valid": this.valid});
-  }
+  toJson() => {"number": this.cardNumber, "industry": this.cardIndustry, "issuer": this.cardIssuer, "valid": this.valid};
+  
+  toString() => "number: ${this.cardNumber}, industry: ${this.cardIndustry}, issuer: ${this.cardIssuer}, valid: ${this.valid}";
   
 }
 
@@ -85,6 +83,7 @@ class Industries {
   final _value;
   const Industries._internal(this._value);
   toString() => '$_value';
+  toJson() => '$_value';
 
   static const AIRLINES = const Industries._internal('Airlines');
   static const TRAVEL_AND_ENTERTAINMENT = const Industries._internal('Travel and Entertainment');
@@ -100,6 +99,7 @@ class Issuers {
   final _value;
   const Issuers._internal(this._value);
   toString() => '$_value';
+  toJson() => '$_value';
 
   static const VISA = const Issuers._internal('Visa');
   static const MASTERCARD = const Issuers._internal('Mastercard');

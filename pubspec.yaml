@@ -1,5 +1,5 @@
 name: credit_cat
-version: 0.2.1
+version: 0.2.2
 author: Anthony Scotti <anthony.m.scotti@gmail.com>
 description: A library for checking credit cards with the Luhn algorithm.
 homepage: https://github.com/amscotti/credit_cat
