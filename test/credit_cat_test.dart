@@ -34,13 +34,13 @@
   
   test("Should return the right industry name", () {
     var cat1 = new creditCat("312321321");
-    expect(cat1.cardIndustry, equals("Travel and Entertainment"));
+    expect(cat1.cardIndustry, equals(Industries.TRAVEL_AND_ENTERTAINMENT));
     
     var cat2 = new creditCat("412321321");
-    expect(cat2.cardIndustry, equals("Banking and Financial"));
+    expect(cat2.cardIndustry, equals(Industries.BANKING_AND_FINANCIAL));
     
     var cat3 = new creditCat("512321321");
-    expect(cat3.cardIndustry, equals("Banking and Financial"));
+    expect(cat3.cardIndustry, equals(Industries.BANKING_AND_FINANCIAL));
   });
     
   test("Should return the right issuer name for Visa", () {
@@ -79,7 +79,7 @@
   
   test("Should return JSON object", () {
     var cat = new creditCat("5232132174");
-    expect(cat.toJSON(), equals('{"number":"5232132174","industry":"Banking and Financial","valid":true}'));
+    expect(cat.toJSON(), equals('{"number":"5232132174","industry":"Banking and Financial","issuer":"Mastercard","valid":true}'));
   });
   
  }  
