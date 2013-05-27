@@ -46,36 +46,36 @@
     
   test("Should return the right issuer name for Visa", () {
     var cat = new creditCat("400000");
-    expect(cat.cardIssuer, equals("Visa"));  
+    expect(cat.cardIssuer, equals(Issuers.VISA));  
   });
   
   test("Should return the right issuer name for Mastercard", () {
     var cat = new creditCat("510000");
-    expect(cat.cardIssuer, equals("Mastercard")); 
+    expect(cat.cardIssuer, equals(Issuers.MASTERCARD)); 
   });
   
   test("Should return the right issuer name for Discover", () {
     var cat1 = new creditCat("601100");
-    expect(cat1.cardIssuer, equals("Discover"));
+    expect(cat1.cardIssuer, equals(Issuers.DISCOVER));
     
     var cat2 = new creditCat("644000");
-    expect(cat2.cardIssuer, equals("Discover"));
+    expect(cat2.cardIssuer, equals(Issuers.DISCOVER));
     
     var cat3 = new creditCat("650000");
-    expect(cat3.cardIssuer, equals("Discover"));
+    expect(cat3.cardIssuer, equals(Issuers.DISCOVER));
   });
   
   test("Should return the right issuer for Amex", () {
     var cat1 = new creditCat("340000");
-    expect(cat1.cardIssuer, equals("Amex"));
+    expect(cat1.cardIssuer, equals(Issuers.AMEX));
     
     var cat2 = new creditCat("370000");
-    expect(cat2.cardIssuer, equals("Amex"));
+    expect(cat2.cardIssuer, equals(Issuers.AMEX));
   });
   
   test("Should return unknown for an issuer that hasn't been implemented yet", () {
     var cat1 = new creditCat("999999");
-    expect(cat1.cardIssuer, equals("Unknown"));
+    expect(cat1.cardIssuer, equals(Issuers.UNKNOWN));
   });
   
   test("Should return JSON object", () {
