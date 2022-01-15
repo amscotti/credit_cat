@@ -22,6 +22,6 @@ void main() {
 credit_cat will automatically remove any space or dashes from the string passed to it but you are also able to pass your own regular expression into CreditCat,
 
 ```dart
-final cat = new CreditCat("1*2*3*2*1*3*2*1*7", new RegExp(r"\*"));
-print(cat.cardNumber == "123213217"); // true  
+final catClean = CreditCat("1*2*3*2*1*3*2*1*7", RegExp(r"\*"));
+print(catClean.number == "123213217"); // true
 ```

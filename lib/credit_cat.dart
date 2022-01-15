@@ -73,9 +73,9 @@ class CreditCat {
   /// Returns a [bool] based on if the card has a valid number
   bool get isValid => _valid;
 
-  /// Creates a [CreditCat] object from a [number], with an optional pattern for cleaning the number
-  CreditCat(String number, [RegExp? patten]) {
-    _number = number.replaceAll(patten ?? RegExp(r"-|\s"), "");
+  /// Creates a [CreditCat] object from a [number], with an optional [regex] for cleaning the number
+  CreditCat(String number, [RegExp? regex]) {
+    _number = number.replaceAll(regex ?? RegExp(r"-|\s"), "");
 
     if (!_number.isEmpty && RegExp(r'^\d*$').hasMatch(_number)) {
       _valid = _validate();
@@ -90,8 +90,7 @@ class CreditCat {
   bool _validate() {
     int doubleEverySecond = 0;
 
-    this
-        ._number
+    _number
         .split('')
         .reversed
         .map(int.parse)

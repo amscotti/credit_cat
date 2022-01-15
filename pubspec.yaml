@@ -1,5 +1,5 @@
 name: credit_cat
-version: 0.4.0
+version: 0.4.1
 description: A library for checking credit cards with the Luhn algorithm.
 homepage: https://github.com/amscotti/credit_cat
 dev_dependencies: 

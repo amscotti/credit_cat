@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Fix spelling errors
+
 ## 0.4.0
 
 - Rework internal logic and clean up APIs
