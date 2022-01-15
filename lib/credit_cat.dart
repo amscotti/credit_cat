@@ -1,5 +1,7 @@
+/// A library for checking credit card numbers using the Luhn algorithm.
 library credit_cat;
 
+/// enum used to hold credit card issuers.
 enum Issuers {
   VISA,
   MASTERCARD,
@@ -8,6 +10,7 @@ enum Issuers {
   UNKNOWN,
 }
 
+/// enum used to hold credit card industries.
 enum Industries {
   AIRLINES,
   TRAVEL_AND_ENTERTAINMENT,
@@ -19,6 +22,7 @@ enum Industries {
   UNKNOWN
 }
 
+/// Map used to hold id to matching industries.
 const Map<String, Industries> _INDUSTRY_IDENTIFIER_MAP = {
   "1": Industries.AIRLINES,
   "2": Industries.AIRLINES,
@@ -31,82 +35,86 @@ const Map<String, Industries> _INDUSTRY_IDENTIFIER_MAP = {
   "9": Industries.NATIONAL_ASSIGNMENT
 };
 
-final List _ISSUER_IDENTIFIER_LIST = [
-  {"RegExp": RegExp(r'^4'), "Issuers": Issuers.VISA},
-  {"RegExp": RegExp(r'^5[1-5]'), "Issuers": Issuers.MASTERCARD},
-  {"RegExp": RegExp(r'^6(0|4|5)(1|4)?(1)?'), "Issuers": Issuers.DISCOVER},
-  {"RegExp": RegExp(r'^3(4|7)'), "Issuers": Issuers.AMEX}
+class _IssuerIdentifier {
+  RegExp regexp;
+  Issuers issuers;
+
+  _IssuerIdentifier(this.regexp, this.issuers) {}
+
+  bool hasMatch(String number) {
+    return regexp.hasMatch(number.substring(0, 6));
+  }
+}
+
+/// List of regular expressions to match card number to issuers
+final List<_IssuerIdentifier> _ISSUER_IDENTIFIER_LIST = [
+  _IssuerIdentifier(RegExp(r'^4'), Issuers.VISA),
+  _IssuerIdentifier(RegExp(r'^5[1-5]'), Issuers.MASTERCARD),
+  _IssuerIdentifier(RegExp(r'^6(0|4|5)(1|4)?(1)?'), Issuers.DISCOVER),
+  _IssuerIdentifier(RegExp(r'^3(4|7)'), Issuers.AMEX),
 ];
 
+/// CreditCat class
 class CreditCat {
-  late String cardNumber;
-  late Issuers cardIssuer;
-  late Industries cardIndustry;
-  late bool valid;
+  late String _number;
+  late Issuers _cardIssuer;
+  late Industries _cardIndustry;
+  late bool _valid;
 
-  CreditCat(String number) {
-    this.cardNumber = number.replaceAll(RegExp(r"-|\s"), "");
-    this._load();
-  }
+  /// Returns the card number
+  String get number => _number;
 
-  CreditCat.clean(String number, RegExp patten) {
-    this.cardNumber = number.replaceAll(patten, "");
-    this._load();
-  }
+  /// Returns the [Issuers] of the card
+  Issuers get issuer => _cardIssuer;
 
-  bool _check(String number) {
-    var reg = RegExp(r'^\d*$');
-    return reg.hasMatch(number) && !number.isEmpty;
-  }
+  /// Returns the [Industries] of the card
+  Industries get industry => _cardIndustry;
 
-  void _load() {
-    if (_check(this.cardNumber)) {
-      this.valid = this._validate(this.cardNumber);
-      this.cardIndustry = this._industry(this.cardNumber);
-      this.cardIssuer = this._issuer(this.cardNumber);
+  /// Returns a [bool] based on if the card has a valid number
+  bool get isValid => _valid;
+
+  /// Creates a [CreditCat] object from a [number], with an optional pattern for cleaning the number
+  CreditCat(String number, [RegExp? patten]) {
+    _number = number.replaceAll(patten ?? RegExp(r"-|\s"), "");
+
+    if (!_number.isEmpty && RegExp(r'^\d*$').hasMatch(_number)) {
+      _valid = _validate();
+      _cardIndustry = _industry();
+      _cardIssuer = _issuer();
     } else {
-      throw FormatException("Unclean Input: ${this.cardNumber}");
+      throw FormatException("Invalid Input: ${_number}");
     }
   }
 
-  int _calculate(String luhn) {
-    var sum = luhn
-        .split("")
-        .map((e) => int.parse(e, radix: 10))
-        .reduce((a, b) => a + b);
+  // Used to validate the credit card number
+  bool _validate() {
+    int doubleEverySecond = 0;
 
-    final delta = [0, 1, 2, 3, 4, -4, -3, -2, -1, 0];
-    for (var i = luhn.length - 1; i >= 0; i -= 2) {
-      sum += delta[int.parse(luhn.substring(i, i + 1), radix: 10)];
-    }
+    this
+        ._number
+        .split('')
+        .reversed
+        .map(int.parse)
+        .toList()
+        .asMap()
+        .forEach((index, number) {
+      int b = index.isOdd ? number * 2 : number;
+      doubleEverySecond += b > 9 ? b - 9 : b;
+    });
 
-    final mod10 = 10 - (sum % 10);
-    return mod10 == 10 ? 0 : mod10;
+    return doubleEverySecond % 10 == 0;
   }
 
-  bool _validate(String luhn) {
-    final luhnDigit =
-        int.parse(luhn.substring(luhn.length - 1, luhn.length), radix: 10);
-    final luhnLess = luhn.substring(0, luhn.length - 1);
-
-    return (this._calculate(luhnLess) == luhnDigit);
-  }
-
-  Industries _industry(String number) {
-    return _INDUSTRY_IDENTIFIER_MAP[number.substring(0, 1)] ??
+  Industries _industry() {
+    return _INDUSTRY_IDENTIFIER_MAP[_number.substring(0, 1)] ??
         Industries.UNKNOWN;
   }
 
-  Issuers _issuer(String number) {
-    Issuers issuer = Issuers.UNKNOWN;
+  Issuers _issuer() {
+    final issuer = _ISSUER_IDENTIFIER_LIST.firstWhere(
+        (element) => element.hasMatch(_number),
+        orElse: () => _IssuerIdentifier(RegExp(r''), Issuers.UNKNOWN));
 
-    final issuerID = number.substring(0, 6);
-    _ISSUER_IDENTIFIER_LIST.forEach((item) {
-      if (item["RegExp"].hasMatch(issuerID)) {
-        issuer = item["Issuers"];
-      }
-    });
-
-    return issuer;
+    return issuer.issuers;
   }
 }
