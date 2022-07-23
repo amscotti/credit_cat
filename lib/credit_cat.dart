@@ -3,43 +3,43 @@ library credit_cat;
 
 /// enum used to hold credit card issuers.
 enum Issuers {
-  VISA,
-  MASTERCARD,
-  DISCOVER,
-  AMEX,
-  UNKNOWN,
+  visa,
+  mastercard,
+  discover,
+  amex,
+  unknown,
 }
 
 /// enum used to hold credit card industries.
 enum Industries {
-  AIRLINES,
-  TRAVEL_AND_ENTERTAINMENT,
-  BANKING_AND_FINANCIAL,
-  MERCHANDIZING_AND_BANKING,
-  PETROLEUM,
-  TELECOMMUNICATIONS,
-  NATIONAL_ASSIGNMENT,
-  UNKNOWN
+  airlines,
+  travelAndEntertainment,
+  bankingAndFinancial,
+  merchandizingAndBanking,
+  petroleum,
+  telecommunications,
+  nationalAssignment,
+  unknown
 }
 
 /// Map used to hold id to matching industries.
-const Map<String, Industries> _INDUSTRY_IDENTIFIER_MAP = {
-  "1": Industries.AIRLINES,
-  "2": Industries.AIRLINES,
-  "3": Industries.TRAVEL_AND_ENTERTAINMENT,
-  "4": Industries.BANKING_AND_FINANCIAL,
-  "5": Industries.BANKING_AND_FINANCIAL,
-  "6": Industries.MERCHANDIZING_AND_BANKING,
-  "7": Industries.PETROLEUM,
-  "8": Industries.TELECOMMUNICATIONS,
-  "9": Industries.NATIONAL_ASSIGNMENT
+const Map<String, Industries> _industryIdentifier = {
+  "1": Industries.airlines,
+  "2": Industries.airlines,
+  "3": Industries.travelAndEntertainment,
+  "4": Industries.bankingAndFinancial,
+  "5": Industries.bankingAndFinancial,
+  "6": Industries.merchandizingAndBanking,
+  "7": Industries.petroleum,
+  "8": Industries.telecommunications,
+  "9": Industries.nationalAssignment
 };
 
 class _IssuerIdentifier {
   RegExp regexp;
   Issuers issuers;
 
-  _IssuerIdentifier(this.regexp, this.issuers) {}
+  _IssuerIdentifier(this.regexp, this.issuers);
 
   bool hasMatch(String number) {
     return regexp.hasMatch(number.substring(0, 6));
@@ -47,11 +47,11 @@ class _IssuerIdentifier {
 }
 
 /// List of regular expressions to match card number to issuers
-final List<_IssuerIdentifier> _ISSUER_IDENTIFIER_LIST = [
-  _IssuerIdentifier(RegExp(r'^4'), Issuers.VISA),
-  _IssuerIdentifier(RegExp(r'^5[1-5]'), Issuers.MASTERCARD),
-  _IssuerIdentifier(RegExp(r'^6(0|4|5)(1|4)?(1)?'), Issuers.DISCOVER),
-  _IssuerIdentifier(RegExp(r'^3(4|7)'), Issuers.AMEX),
+final List<_IssuerIdentifier> _issuerIdentifier = [
+  _IssuerIdentifier(RegExp(r'^4'), Issuers.visa),
+  _IssuerIdentifier(RegExp(r'^5[1-5]'), Issuers.mastercard),
+  _IssuerIdentifier(RegExp(r'^6(0|4|5)(1|4)?(1)?'), Issuers.discover),
+  _IssuerIdentifier(RegExp(r'^3(4|7)'), Issuers.amex),
 ];
 
 /// CreditCat class
@@ -77,12 +77,12 @@ class CreditCat {
   CreditCat(String number, [RegExp? regex]) {
     _number = number.replaceAll(regex ?? RegExp(r"-|\s"), "");
 
-    if (!_number.isEmpty && RegExp(r'^\d*$').hasMatch(_number)) {
+    if (_number.isNotEmpty && RegExp(r'^\d*$').hasMatch(_number)) {
       _valid = _validate();
       _cardIndustry = _industry();
       _cardIssuer = _issuer();
     } else {
-      throw FormatException("Invalid Input: ${_number}");
+      throw FormatException("Invalid Input: $_number");
     }
   }
 
@@ -105,14 +105,13 @@ class CreditCat {
   }
 
   Industries _industry() {
-    return _INDUSTRY_IDENTIFIER_MAP[_number.substring(0, 1)] ??
-        Industries.UNKNOWN;
+    return _industryIdentifier[_number.substring(0, 1)] ?? Industries.unknown;
   }
 
   Issuers _issuer() {
-    final issuer = _ISSUER_IDENTIFIER_LIST.firstWhere(
+    final issuer = _issuerIdentifier.firstWhere(
         (element) => element.hasMatch(_number),
-        orElse: () => _IssuerIdentifier(RegExp(r''), Issuers.UNKNOWN));
+        orElse: () => _IssuerIdentifier(RegExp(r''), Issuers.unknown));
 
     return issuer.issuers;
   }
